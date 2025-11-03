@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #f59e0b;
+            --accent-color: #3b82f6;
+            --light-bg: #f8fafc;
+            --dark-text: #1e293b;
+            --light-text: #64748b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark-text);
+            background-color: #fff;
+        }
+
+        .catalog-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #2d4a8a 100%);
+            color: white;
+            padding: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-background::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .tr-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-section {
+            margin-bottom: 4rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+
+        .products-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .product-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .product-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .product-card:hover::after {
+            left: 100%;
+        }
+
+        .product-card.featured {
+            border: 2px solid var(--secondary-color);
+        }
+
+        .product-image-container {
+            position: relative;
+            height: 280px;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            overflow: hidden;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .product-image-wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s ease;
+        }
+
+        .product-card:hover .product-image-wrapper {
+            transform: rotateY(180deg);
+        }
+
+        .unaj-img {
+            position: relative;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            margin: 2rem 0;
+        }
+
+        .product-img-front, 
+        .product-img-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            object-fit: cover;
+        }
+
+        .product-img-front {
+            transform: rotateY(0deg);
+        }
+
+        .product-img-back {
+            transform: rotateY(180deg);
+            background-color: #f1f5f9;
+        }
+
+        .product-card:hover .product-img {
+            transform: scale(1.05);
+        }
+
+        .product-content {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .product-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .features-table .table-striped tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .features-table .table-striped tbody tr:hover {
+            background-color: rgba(59, 130, 246, 0.1) !important;
+            transform: translateX(8px);
+        }
+
+        .product-category {
+            color: var(--light-text);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .features-table {
+            margin-top: 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .features-table .table {
+            margin-bottom: 0;
+        }
+
+        .features-table .table td {
+            border: none;
+            padding: 0.75rem 0.5rem;
+        }
+
+        .feature-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            width: 40%;
+        }
+
+        .feature-value {
+            color: var(--dark-text);
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .features-table .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(241, 245, 249, 0.5);
+        }
+
+        .catalog-footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        /* MÓVIL - Todo en una sola sección */
+        @media (max-width: 767px) {
+            .product-card{
+                box-sizing: border-box;
+                height: auto;
+                min-height: auto;
+            }
+            .product-content {
+                padding: 1.5rem;
+                margin-top: 15rem;
+            }
+            
+            .section-title {
+                font-size: 1.75rem;
+            }
+            
+            .tr-name {
+                font-size: 1.2rem;
+            }
+            
+            .product-card .row {
+                display: flex;
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .product-card .col-12.col-md-6 {
+                width: 100%;
+            }
+            
+            /* Forzar orden: imagen arriba, contenido abajo */
+            .product-card .col-md-6:has(.product-image-wrapper) {
+                order: -1;
+            }
+            
+            .product-card .col-md-6:has(.product-content) {
+                order: 1;
+            }
+            
+            .feature-label {
+                width: 35%;
+                font-size: 0.9rem;
+            }
+            
+            .feature-value {
+                font-size: 0.9rem;
+                padding: 0.5rem;
+            }
+            
+            .product-name {
+                font-size: 1.1rem;
+            }
+            
+            .product-category {
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+                padding-bottom: 0.75rem;
+            }
+            
+            .product-image-container {
+                height: 220px;
+                border-radius: 12px 12px 0 0;
+            }
+            
+            .product-img-front, .product-img-back {
+                height: 220px;
+                margin: 0.5rem 0;
+                box-sizing: content-box;
+            }
+            
+            .catalog-main.py-5 {
+                padding-top: 1.5rem !important;
+                padding-bottom: 1.5rem !important;
+            }
+            
+            .category-section {
+                margin-bottom: 2.5rem;
+            }
+            
+            .features-table {
+                margin-top: 0;
+                justify-content: flex-start;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .product-card .row {
+                flex-direction: row;
+            }
+            
+            .product-card .col-12.col-md-6 {
+                width: 50%;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .product-img-back, .product-img-front {
+                min-height: 350px;
+            }
+            
+            .product-image-container {
+                height: 350px;
+            }
+        }
+
+        .category-section .row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .category-section .col-md-4 {
+            flex: 0 0 auto;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .category-section .col-md-4 {
+                width: 33.333333%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="catalog-header">
+        <div class="header-background">
+
+                    <h1 class="display-4 fw-bold text-white mb-2">CATÁLOGO</h1>
+                    <img src="https://portal.unaj.edu.pe/themes/custom/modins_sub/logo.png" alt="Logo" class="unaj-img">
+                                      
+                    <h2 class="display-3 fw-bold text-warning mb-3">2025</h2>
+                    <h3 class="tr-name">Cableado Estructurado y Conexiones Inalámbricas</h3>
+                    
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="catalog-main py-5">
+        <div class="container-fluid">
+        <div class="container">
+
+            <section class="category-section mb-5">
+                <div class="section-header">
+                    <h2 class="section-title">Cables de par trenzado</h2>
+                </div>
+                
+                <div class="products-grid row">
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/05/FUTP-LSFRZH-Solido-Categoria-6A-min.jpg.webp" alt="Cable F/UTP Cat 6A LSZH-3 4PX23AWG .Front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/FUTP-LSFRZH-Cat-6A-cable-1024x1024.jpg" alt="Cable F/UTP Cat 6A LSZH-3 4PX23AWG .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Cable F/UTP Cat 6A LSZH-3 4PX23AWG</h3>
+                                    <div class="product-category">Cable de red de cobre / Cat 6A / blindado / LSZH-3/ indoor / Cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Ancho de banda</td>
+                                                    <td class="feature-value">500 MHz</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre</td>
+                                                    <td class="feature-value">23AWG</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Velocidad</td>
+                                                    <td class="feature-value">10 Gbps</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Chaqueta</td>
+                                                    <td class="feature-value">LSFRZH - Violeta - diámetro Exterior de 7.4 mm</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Presentación</td>
+                                                    <td class="feature-value">305 m</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Cable U/FTP Cat6A LSZH 4PX23AWG</h3>
+                                    <div class="product-category">Cable de red de cobre / Cat6A / blindado / LSZH / indoor / Cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Ancho de banda</td>
+                                                    <td class="feature-value">500 MHz</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre</td>
+                                                    <td class="feature-value">23 AWG</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Velocidad</td>
+                                                    <td class="feature-value">10 Gbps</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Chaqueta</td>
+                                                    <td class="feature-value">LSZH - Blanco - diámetro Exterior de 7 mm</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Presentación</td>
+                                                    <td class="feature-value">305 m</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/05/UFTP-Solido-Categoria-6A-2.jpg.webp" alt="Cable U/FTP Cat6A LSZH 4PX23AWG .Front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/UFTP-Solido-Categoria-6A-cable-1024x1024.jpg.webp" alt="Cable U/FTP Cat6A LSZH 4PX23AWG .Back" class="product-img-back">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                <img src="https://satra.pe/wp-content/uploads/2024/05/SFUTP-Solido-Categoria-6-1.jpg.webp" alt="Cable SF/UTP Cat6 PVC 4Px23AWG .Front" class="product-img-front">
+                                <img src="https://satra.pe/wp-content/uploads/2024/06/SF_UTP-Categoria-6-1024x1024.jpg.webp" alt="Cable SF/UTP Cat6 PVC 4Px23AWG .Back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Cable SF/UTP Cat6 PVC 4Px23AWG</h3>
+                                    <div class="product-category">Cable de red de cobre / Cat6 / SF/UTP / blindado / indoor / Cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Ancho de banda</td>
+                                                    <td class="feature-value">250 MHz</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre</td>
+                                                    <td class="feature-value">23 AWG</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Velocidad</td>
+                                                    <td class="feature-value">1 Gbps</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Chaqueta</td>
+                                                    <td class="feature-value">PVC de color gris</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Presentación</td>
+                                                    <td class="feature-value">305 m</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Cable U/UTP Cat6 LSZH 4PX23AWG</h3>
+                                    <div class="product-category">Cable de red de cobre / Cat6 / U/UTP / LSZH / indoor / Cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Ancho de banda</td>
+                                                    <td class="feature-value">250 MHz</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre</td>
+                                                    <td class="feature-value">23 AWG</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Velocidad</td>
+                                                    <td class="feature-value">1 Gbps</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Chaqueta</td>
+                                                    <td class="feature-value">LSZH de color gris</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Presentación</td>
+                                                    <td class="feature-value">305 m</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                <img src="https://satra.pe/wp-content/uploads/2024/07/UTP-LSZH-Solido-Categoria-6-23AWG.jpg.webp" alt="Cable U/UTP Cat6 LSZH 4PX23AWG .Front" class="product-img-front">
+                                <img src="https://satra.pe/wp-content/uploads/2024/06/U_UTP-CATEGORIA-6-LSZH-1024x1024.jpg.webp" alt="Cable U/UTP Cat6 LSZH 4PX23AWG .Back" class="product-img-back">                                
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                <img src="https://satra.pe/wp-content/uploads/2024/05/UUTP-LSFRZH-Solido-Categoria-6-min.jpg.webp" alt="Cable U/UTP Cat6 LSZH-3 4PX24AWG .Front" class="product-img-front">
+                                <img src="https://satra.pe/wp-content/uploads/2024/06/UUTP-LSFRZH-Cat-6-cable-1024x1024.jpg.webp" alt="Cable U/UTP Cat6 LSZH-3 4PX24AWG .Back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Cable U/UTP Cat6 LSZH-3 4PX24AWG</h3>
+                                    <div class="product-category">Cable de red de cobre Cat 6 para transmisión de datos con chaqueta azul LSZH-3, para uso interior</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Ancho de banda</td>
+                                                    <td class="feature-value">250 MHz</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre</td>
+                                                    <td class="feature-value">24 AWG</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Velocidad</td>
+                                                    <td class="feature-value">1 Gbps</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Chaqueta</td>
+                                                    <td class="feature-value">LSFRZH de color azul</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Presentación</td>
+                                                    <td class="feature-value">305 m</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Cable U/UTP Cat6 LSZH 4PX24AWG</h3>
+                                    <div class="product-category">Cable de red de cobre / Cat6 / 24AWG / U/UTP / LSZH / indoor / Cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Ancho de banda</td>
+                                                    <td class="feature-value">250 MHz</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre</td>
+                                                    <td class="feature-value">24 AWG</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Velocidad</td>
+                                                    <td class="feature-value">1 Gbps</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Chaqueta</td>
+                                                    <td class="feature-value">LSZH de color gris</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Presentación</td>
+                                                    <td class="feature-value">305 m</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                <img src="https://satra.pe/wp-content/uploads/2024/05/UTP-LSZH-Solido-Categoria-6-min.jpg.webp" alt="Cable U/UTP Cat6 LSZH 4PX24AWG .Front" class="product-img-front">
+                                <img src="https://satra.pe/wp-content/uploads/2024/06/U_UTP-CATEGORIA-6-LSZH-1024x1024.jpg.webp" alt="Cable U/UTP Cat6 LSZH 4PX24AWG .Back" class="product-img-back">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                <img src="https://satra.pe/wp-content/uploads/2024/05/UTP-Solido-Categoria-5e-min.jpg.webp" alt="Cable U/UTP Cat 5e CM 4PX24AWG .Front" class="product-img-front">
+                                <img src="https://satra.pe/wp-content/uploads/2024/06/cables-3D-1024x1024.jpg.webp" alt="Cable U/UTP Cat 5e CM 4PX24AWG .Back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Cable U/UTP Cat 5e CM 4PX24AWG</h3>
+                                    <div class="product-category">Cable de red de cobre / Cat5e / U/UTP / indoor / Cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Ancho de banda</td>
+                                                    <td class="feature-value">100 MHz</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre</td>
+                                                    <td class="feature-value">24 AWG</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Velocidad</td>
+                                                    <td class="feature-value">1 Gbps</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Chaqueta</td>
+                                                    <td class="feature-value">PVC de color gris</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Presentación</td>
+                                                    <td class="feature-value">305 m</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Cable U/UTP Cat6 Exterior 4PX23AWG</h3>
+                                    <div class="product-category">Cable de red de cobre / Cat6 / U/UTP / PE / outdoor / Cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Ancho de banda</td>
+                                                    <td class="feature-value">250 MHz</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre</td>
+                                                    <td class="feature-value">23 AWG</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Velocidad</td>
+                                                    <td class="feature-value">1 Gbps</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Chaqueta</td>
+                                                    <td class="feature-value">PE de color negro</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Presentación</td>
+                                                    <td class="feature-value">305 m</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                <img src="https://satra.pe/wp-content/uploads/2024/05/UUTP-Solido-Categoria-6-2-e1717013053303.jpg.webp" alt="Cable U/UTP Cat6 Exterior 4PX23AWG .Front" class="product-img-front">
+                                <img src="https://satra.pe/wp-content/uploads/2024/05/CAT-6-PE-U_UTP-1024x1024.jpg.webp" alt="Cable U/UTP Cat6 Exterior 4PX23AWG .Back" class="product-img-back">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                <img src="https://satra.pe/wp-content/uploads/2024/05/FUTP-Solido-Categoria-6-2.jpg.webp" alt="Cable F/UTP Cat6 Exterior 4PX23AWG / 4PX24AWG Front" class="product-img-front">
+                                <img src="https://satra.pe/wp-content/uploads/2024/06/F_UTP-Categoria-6-1024x1024.jpg.webp" alt="Cable F/UTP Cat6 Exterior 4PX23AWG / 4PX24AWG .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Cable F/UTP Cat6 Exterior 4PX23AWG / 4PX24AWG</h3>
+                                    <div class="product-category">Cable de red de cobre / Cat6 / F/UTP / blindado / outdoor / 24 Y 23 AWG /Cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Ancho de banda</td>
+                                                    <td class="feature-value">250 MHz</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre</td>
+                                                    <td class="feature-value">23 y 24 AWG</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Velocidad</td>
+                                                    <td class="feature-value">1 Gbps</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Chaqueta</td>
+                                                    <td class="feature-value">PE de color negro</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Presentación</td>
+                                                    <td class="feature-value">305 m</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección de Jacks -->
+            <section class="category-section mb-5">
+                <div class="section-header">
+                    <h2 class="section-title">Jacks</h2>
+                </div>
+                
+                <div class="products-grid">
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Jack RJ45 Modular Cat 6A Blindado con Identificador</h3>
+                                    <div class="product-category">Conector RJ45 / Cat6A / Blindado /cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Estándar</td>
+                                                    <td class="feature-value">ANSI/TIA 568-C e ISO/IEC 11801</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre cables</td>
+                                                        <td class="feature-value">22 a 24 AWG </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Terminación</td>
+                                                    <td class="feature-value">IDC 110</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Material Conductor</td>
+                                                    <td class="feature-value">8 pines bañados en oro de 50 um</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Colores</td>
+                                                    <td class="feature-value">Metalizados (blindado 360°)</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Jack-identificador-12-ok-min.jpg.webp" alt="Jack RJ45 Modular Cat 6A Blindado con Identificador .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Jack-identificador-11-min.jpg" alt="Jack RJ45 Modular Cat 6A Blindado con Identificador .back" class="product-img-back">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Jack-cat-6-2-1-1.jpg.webp" alt="Jack RJ45 Cat6 Modular blanco/azul/rojo/negro .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Jack-cat-6-5-.jpg" alt="Jack RJ45 Cat6 Modular blanco/azul/rojo/negro .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Jack RJ45 Cat6 Modular blanco/azul/rojo/negro</h3>
+                                    <div class="product-category">Conector RJ45 / Cat6 /cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Estándar</td>
+                                                    <td class="feature-value">ANSI/TIA 568-C e ISO/IEC 11801</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre cables</td>
+                                                        <td class="feature-value">22 a 24 AWG </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Terminación</td>
+                                                    <td class="feature-value">IDC 110</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Material Conductor</td>
+                                                    <td class="feature-value">8 pines bañados en oro de 50 um</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Colores</td>
+                                                    <td class="feature-value">Amarillo, Azul, Blanco, Marfil, Rojo y Negro.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Jack RJ45 Modular Cat 5e Blanco/azul/rojo</h3>
+                                    <div class="product-category">Conector RJ45 / Cat5e /cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Estándar</td>
+                                                    <td class="feature-value">ANSI/TIA 568-C e ISO/IEC 11801</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre cables</td>
+                                                        <td class="feature-value">22 a 24 AWG </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Terminación</td>
+                                                    <td class="feature-value">IDC 110</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Material Conductor</td>
+                                                    <td class="feature-value">8 pines bañados en oro de 50 um</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Colores</td>
+                                                    <td class="feature-value">Amarillo, Azul, Blanco, Marfil y Rojo.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Jack-cat-5e-1-1-1-1024x1024.jpg" alt="Jack RJ45 Modular Cat 5e Blanco/azul/rojo .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Jack-cat-5e-5-.jpg" alt="Jack RJ45 Modular Cat 5e Blanco/azul/rojo .back" class="product-img-back">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Jack-cat-6A-Blindado-Angular-2--1024x1024.jpg.webp" alt="Jack RJ45 Angular Cat6A Blindado .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Jack-cat-6A-Blindado-Angular-10-.jpg" alt="Jack RJ45 Angular Cat6A Blindado .front" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Jack RJ45 Angular Cat6A Blindado</h3>
+                                    <div class="product-category">Conector RJ45 / Cat6A / Blindado / Angular / cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Estándar</td>
+                                                    <td class="feature-value">ANSI/TIA 568-C.2 e ISO/IEC 11801</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre cables</td>
+                                                        <td class="feature-value">22 a 24 AWG </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Terminación</td>
+                                                    <td class="feature-value">IDC 110</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Material Conductor</td>
+                                                    <td class="feature-value">8 pines bañados en oro de 50 um + punto de conexión a tierra</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Colores</td>
+                                                    <td class="feature-value">Metalizados (blindado 360°)</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Jack RJ45 Angular Cat 6 Blanco/azul/rojo</h3>
+                                    <div class="product-category">Conector RJ45 / Cat6 / Angular / cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Estándar</td>
+                                                    <td class="feature-value">ANSI/TIA 568-C.2 e ISO/IEC 11801</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre cables</td>
+                                                        <td class="feature-value">22 a 24 AWG </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Terminación</td>
+                                                    <td class="feature-value">IDC 110</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Material Conductor</td>
+                                                    <td class="feature-value">8 pines de aleacion plata, bañados en oro 50um</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Colores</td>
+                                                    <td class="feature-value">Blanco, azul y rojo</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Jack-cat-6-Angular-1-1-1-1024x1024.jpg.webp" alt="Jack RJ45 Angular Cat 6 Blanco/azul/rojo .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Jack-cat-6-Angular-6-.jpg" alt="Jack RJ45 Angular Cat 6 Blanco/azul/rojo .back" class="product-img-back">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/09/Jack-cat-6ABlindado-4ok.jpg" alt="Jack RJ45 Modular Cat 6A+ Blindado .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/09/Jack-cat-6ABlindado-2ok.jpg" alt="Jack RJ45 Modular Cat 6A+ Blindado .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Jack RJ45 Modular Cat 6A+ Blindado</h3>
+                                    <div class="product-category">Conector RJ45 / Cat6A / Blindado /cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Estándar</td>
+                                                    <td class="feature-value">ANSI/TIA 568.2-D e ISO/IEC 11801</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Calibre cables</td>
+                                                        <td class="feature-value">22 a 26 AWG </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Terminación</td>
+                                                    <td class="feature-value">IDC 110</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Material Conductor</td>
+                                                    <td class="feature-value">8 pines bañados en oro de 50 um</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Colores</td>
+                                                    <td class="feature-value">Metálico (blindado 360°)</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Sección de Herramientas -->
+            <section class="category-section">
+                <div class="section-header">
+                    <h2 class="section-title">Herramientas</h2>
+                </div>
+                
+                <div class="products-grid">
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Installer kit</h3>
+                                    <div class="product-category">Herramienta / red / cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-value">01 Crimping Tool (crimpeador)</td>
+                                                </tr>
+                                                <tr>
+
+                                                    <td class="feature-value">01 pelador de cable</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-value">01 módulo de repuesto del terminador</td>
+                                                </tr>
+                                                    <td class="feature-value">01 Lan Tester</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-value">01 terminador con dado verde compatible con Jacks de 90° de cat.5e, 6 y 6A</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/kit.jpg.webp" alt="Installer kit .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Instaler-Kit-4-.jpg" alt="Installer kit .back" class="product-img-back">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Terminador-para-Jack-Modular-1--300x300.jpg" alt="Terminador para Jack RJ45 Modular SATRA .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Terminador-para-Jack-Modular-3-.jpg" alt="Terminador para Jack RJ45 Modular SATRA .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Terminador para Jack RJ45 Modular SATRA</h3>
+                                    <div class="product-category">Herramienta / red / cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Conectorización de Jacks</td>
+                                                        <td class="feature-value">categoría 5e, 6 y 6A SATRA</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Terminación</td>
+                                                    <td class="feature-value">IDC 110</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-value" colspan="2">Mango de presión para la terminación y corte de hilos de cobre sobrante.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-value" colspan="2">Seguro de fijación del dado de repuesto.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-value" colspan="2">Diseño anatómico, con seguro de pestillo.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Terminador para Jack RJ45 Angular</h3>
+                                    <div class="product-category">Herramienta / red / cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Conectorización de Jacks angulares</td>
+                                                    <td class="feature-value">Cat 6 y Cat 6A SATRA</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Terminación</td>
+                                                    <td class="feature-value">IDC 110</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-value" colspan="2">Seguro de fijación del dado de repuesto.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-value" colspan="2">Mango de presión para la terminación y corte de hilos de cobre sobrante.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Terminador-de-Jacks-Angular-1-1-300x300.jpg.webp" alt="Terminador para Jack RJ45 Angular .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Terminador-de-Jacks-Angular-5jpg.jpg" alt="Terminador para Jack RJ45 Angular .back" class="product-img-back">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/ez-herramienta-min-260x300.jpg.webp" alt="Crimpeador EZ Tool RJ45 SATRA .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/ez-herramienta-min-260x300.jpg.webp" alt="Crimpeador EZ Tool RJ45 SATRA .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Crimpeador EZ Tool RJ45 SATRA</h3>
+                                    <div class="product-category">Herramienta / red / cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Terminación</td>
+                                                        <td class="feature-value">Plug EZ RJ45</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Categorias</td>
+                                                    <td class="feature-value">Cat 5e, Cat6 y Cat 6A SATRA</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Diseño</td>
+                                                    <td class="feature-value">Ergonómico para una manipulación correcta</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Rango de Dimensiones</td>
+                                                    <td class="feature-value">Corte del cable 0.7 – 1.40mm</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Vida Útil de la Cuchilla</td>
+                                                    <td class="feature-value">Más de 5000 veces</td>
+                                                </tr>    
+                                                <tr>
+                                                    <td class="feature-label">Peso</td>
+                                                    <td class="feature-value">420g</td>
+                                                </tr>                                         
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Impact Tool</h3>
+                                    <div class="product-category">Herramienta / red / cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Calibre</td>
+                                                    <td class="feature-value">22 a 26 AWG</td>
+                                                </tr>    
+                                                <tr>
+                                                    <td class="feature-label">Terminación</td>
+                                                    <td class="feature-value">IDC 110</td>
+                                                </tr>
+                                                <tr>
+                                                        <td class="feature-value" colspan="2">Diseño ergonómico para una manipulación correcta. </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-value" colspan="2">Cuchillas desmontables.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-value" colspan="2">Configuración de nivel de impacto (alto y bajo).</td>
+                                                </tr>                                       
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/tool.jpg.webp" alt="Impact Tool .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/Impac-Tool-4g.jpg" alt="Impact Tool .back" class="product-img-back">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/cinta-Satra-calada-min-755x1024.jpg.webp" alt="Cinta Adhesivo Dos Caras Easy Cut SATRA .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/06/cinta-2-min.jpg" alt="Cinta Adhesivo Dos Caras Easy Cut SATRA .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Cinta Adhesivo Dos Caras Easy Cut SATRA</h3>
+                                    <div class="product-category">Accesorio / organización / velcro / red / cableado estructurado</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Ancho</td>
+                                                    <td class="feature-value">10 o 20 mm</td>
+                                                </tr>    
+                                                <tr>
+                                                    <td class="feature-label">Longitud</td>
+                                                    <td class="feature-value">5 o 20 m</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Espesor</td>
+                                                    <td class="feature-value">1.2 mm</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Peso</td>
+                                                    <td class="feature-value">163 g</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Material</td>
+                                                    <td class="feature-value">Nylon</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Fuerza de tracción horizontal</td>
+                                                    <td class="feature-value">5 o 12 kg</td>
+                                                </tr> 
+                                                <tr>
+                                                    <td class="feature-label">Fuerza de tracción vertical</td>
+                                                    <td class="feature-value">200 o 420 kg</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Color</td>
+                                                    <td class="feature-value">Negro</td>
+                                                </tr>                                     
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+            </div>
+        <div class="container-fluid" style="max-width: 1600px">
+            <section class="category-section">
+                <div class="section-header">
+                    <h2 class="section-title">Canaletas</h2>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+
+                        <div class="product-card featured">
+                            <div class="product-image-container">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/07/Canaletas-Piso-1-1-1-1024x1024.jpg.webp" alt="Canaletas de Piso .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/07/Canaletas-Piso-1-1-1-1024x1024.jpg.webp" alt="Canaletas de Piso .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="product-content">
+                                <h3 class="product-name">Canaletas de Piso</h3>
+                                <div class="product-category">Canaleta organizadora de cables para piso</div>
+                                
+                                <div class="features-table">
+                                    <table class="table table-striped table-hover">
+                                        <tbody>
+                                        <tr>
+                                            <td class="feature-value">Cierre hermético contra polvo y roedores</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Capacidad amplia para múltiples cables</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Uso en redes eléctricas, cómputo y telefónicas</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Resistente a químicos de limpieza</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Instalación fácil</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">PVC rígido para alto tránsito</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Anti-abrasión</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Longitud: 2 metros</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Color: Gris</td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <div class="product-card featured">
+                            <div class="product-image-container">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/07/Canaletas-Pared-1--1024x1024.jpg.webp" alt="Canaletas de Pared .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/07/Canaletas-Pared-1--1024x1024.jpg.webp" alt="Canaletas de Pared .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="product-content">
+                                <h3 class="product-name">Canaletas de Pared</h3>
+                                <div class="product-category">Canaleta organizadora de cables / Accesorio</div>
+                                
+                                <div class="features-table">
+                                    <table class="table table-striped table-hover">
+                                        <tbody>
+                                        <tr>
+                                            <td class="feature-value">Cierre hermético contra polvo y roedores</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Capacidad amplia para múltiples cables</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Uso en redes eléctricas, cómputo y telefónicas</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Resistente a químicos de limpieza</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Instalación fácil</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">PVC de alto impacto y anti-abrasión</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Longitud: 2 metros - Color: Blanco</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Estándar ANSI/TIA 569 e ISO 14763-2</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Compatibilidad con accesorios de canalización</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Grado de protección IP40</td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <div class="product-card featured">
+                            <div class="product-image-container">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/07/Canaletas-Pared-Adhesivo-1-1-1-1-1-1-1-1-1-1024x1024.jpg.webp" alt="Canaletas de Pared Adhesivo .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/07/Canaletas-Pared-Adhesivo-1-1-1-1-1-1-1-1-1-1024x1024.jpg.webp" alt="Canaletas de Pared Adhesivo .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="product-content">
+                                <h3 class="product-name">Canaletas de Pared Adhesivo</h3>
+                                <div class="product-category">Canaletas para organización de cables</div>
+                                
+                                <div class="features-table">
+                                    <table class="table table-striped table-hover">
+                                        <tbody>
+                                        <tr>
+                                            <td class="feature-value">Cierre hermético contra polvo y roedores</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Capacidad amplia para múltiples cables</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Uso en redes eléctricas, cómputo y telefónicas</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Resistente a químicos de limpieza</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Instalación fácil</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">PVC de alto impacto y anti-abrasión</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Longitud: 2 metros - Color: Blanco</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Cinta autoadhesiva para fijación en pared</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Estándar ANSI/TIA 569 e ISO 14763-2</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Compatibilidad con accesorios de canalización</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="feature-value">Grado de protección IP40</td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            </div>
+            <div class="container">
+
+
+                <section class="category-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Switches</h2>
+                    </div>
+                <div class="products-grid">
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/08/switch-giga-2.jpg.webp" alt="Switch 24 puertos Gigabit Ethernet rackeable .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/08/Switch-rackeable-24-2-.jpg" alt="Switch 24 puertos Gigabit Ethernet rackeable .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Switch 24 puertos Gigabit Ethernet rackeable</h3>
+                                    <div class="product-category">Switch 24 puertos 10/100/100 MBPS</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                <td>Estándar</td>
+                                                <td>IEEE 802.3/u/v/sab</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Interface</td>
+                                                <td>24 x 10/100/1000 Mbps puertos RJ45</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Capacidad de Conmutación</td>
+                                                <td>48Gbps</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Tasa de Reenvío</td>
+                                                <td>14880pps (10Mbps) / 148800pps (100Mbps) / 1488000pps (1000Mbps)</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Tabla de direcciones MAC</td>
+                                                <td>8k</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Método de Transmisión</td>
+                                                <td>Almacenamiento y reenvío</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Consumo de Energía</td>
+                                                <td>14.6W</td>
+                                                </tr>                                                 
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Switch 24 puertos Fast Ethernet rackeable</h3>
+                                    <div class="product-category">Switch 10/100 Mbps / Rackmount</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                <td>Estándar</td>
+                                                <td>IEEE 802.3/u/x</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Interface</td>
+                                                <td>24 x 10/100 Mbps puertos RJ45</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Capacidad de Conmutación</td>
+                                                <td>4.8Gbps</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Tasa de Reenvío</td>
+                                                <td>14880pps (10Mbps) / 148800pps (100Mbps)</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Tabla de direcciones MAC</td>
+                                                <td>8k</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Método de Transmisión</td>
+                                                <td>Almacenamiento y reenvío</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Consumo de Energía</td>
+                                                <td>3.53W</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/08/switch-fast-300x300.jpg.webp" alt="Switch 24 puertos Fast Ethernet rackeable .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/08/Switch-rackeable-24-2-.jpg" alt="Switch 24 puertos Fast Ethernet rackeable .back" class="product-img-back">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/08/Switch-Giga-10-min-300x300.jpg.webp" alt="Switch 10 Puertos Giga Ethernet con 8 puertos PoE+ .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/08/Switch-Giga-10-min-300x300.jpg.webp" alt="Switch 10 Puertos Giga Ethernet con 8 puertos PoE+ .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Switch 10 Puertos Giga Ethernet con 8 puertos PoE+</h3>
+                                    <div class="product-category">Switch de escritorio / PoE+ /</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                <td>Estándar</td>
+                                                <td>IEEE802.3, IEEE802.3u, IEEE802.3ab, IEEE802.3x</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Puertos Ethernet</td>
+                                                <td>9 x 10/100/1000 Base-T PoE, 2 x 10/100/1000 Base-T RJ45</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Capacidad de Conmutación</td>
+                                                <td>20 Gbps</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Reenvío de paquetes</td>
+                                                <td>14.88 Mbps</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Tabla de direcciones MAC</td>
+                                                <td>2K</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Potencia máxima por puerto</td>
+                                                <td>30W (PoE)</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Consumo de energía</td>
+                                                <td>120W</td>
+                                                </tr>                                              
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Switch 8 puertos Giga Ethernet para escritorio</h3>
+                                    <div class="product-category">Switch 10/100/1000 Mbps / Desktop</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                <td>Estándar</td>
+                                                <td>IEEE 802.3, IEEE 802.3u</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Puertos</td>
+                                                <td>5/8 x 10/100/1000 Mbps Ethernet auto-sensing</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Capacidad de Conmutación</td>
+                                                <td>10Gbps (5 puertos) / 16Gbps (8 puertos)</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Velocidad de datos</td>
+                                                <td>10/100/1000 Mbps @Full Duplex</td>
+                                                </tr>
+                                                <tr>
+                                                <td>Protocolo</td>
+                                                <td>CSMA/CD</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/08/Switch-Giga-8-1-300x300.jpg.webp" alt="Switch 8 puertos Giga Ethernet para escritorio .front" class="product-img-front">
+                                    <img src="https://satra.pe/wp-content/uploads/2024/08/Switch-Giga-8-1-300x300.jpg.webp" alt="Switch 8 puertos Giga Ethernet para escritorio .back" class="product-img-back">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                </section>
+                <section class="category-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Wi-fi Routers</h2>
+                    </div>
+                <div class="products-grid">     
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://coolboxpe.vtexassets.com/arquivos/ids/375638-800-800?v=638562272081570000&width=800&height=800&aspect=true" alt="Router TP-Link Ac 1200 Archer C50 inalámbrico .front" class="product-img-front">
+                                    <img src="https://coolboxpe.vtexassets.com/arquivos/ids/375649-600-600?v=638895991498700000&width=600&height=600&aspect=true" alt="Router TP-Link Ac 1200 Archer C50 inalámbrico .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Router TP-Link Ac 1200 Archer C50 inalámbrico</h3>
+                                    <div class="product-category">Cómputo / Conectividad / Routers</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Frecuencia inalámbrica</td>
+                                                        <td class="feature-value">2.4 y 5 GHz</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Velocidad de transmisión</td>
+                                                    <td class="feature-value">300 Mbps</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Rango de cobertura</td>
+                                                    <td class="feature-value">30m^2</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Certificación</td>
+                                                    <td class="feature-value">FCC, CE, RoHS</td>
+                                                </tr>    
+                                                <tr>
+                                                    <td class="feature-label">Modelo</td>
+                                                    <td class="feature-value">ARCHER-C50</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Marca</td>
+                                                    <td class="feature-value">TP-LINK</td>
+                                                </tr>                                                  
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">TP-Link Archer BE800 Router Wi-Fi 7 Tri-Band BE19000</h3>
+                                    <div class="product-category">Cómputo / Conectividad / Routers</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Frecuencia inalámbrica</td>
+                                                        <td class="feature-value">2.4, 5 GHz y 6 GHz</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Velocidad de transmisión</td>
+                                                    <td class="feature-value">19000 Mbps</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Diseño</td>
+                                                    <td class="feature-value">Ergonómico para una manipulación correcta</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Rango de cobertura</td>
+                                                    <td class="feature-value">50m^2</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Certificación</td>
+                                                    <td class="feature-value">FCC, CE, RoHS</td>
+                                                </tr>    
+                                                <tr>
+                                                    <td class="feature-label">Modelo</td>
+                                                    <td class="feature-value">TL-ARCHER BE800</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Marca</td>
+                                                    <td class="feature-value">TP-LINK</td>
+                                                </tr> 
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://coolboxpe.vtexassets.com/arquivos/ids/458043-800-800?v=638845598255830000&width=800&height=800&aspect=true" alt="TP-Link Archer BE800 Router Wi-Fi 7 Tri-Band BE19000 .front" class="product-img-front">
+                                    <img src="https://coolboxpe.vtexassets.com/arquivos/ids/458042-800-800?v=638845598256000000&width=800&height=800&aspect=true" alt="TP-Link Archer BE800 Router Wi-Fi 7 Tri-Band BE19000 .back" class="product-img-back">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://coolboxpe.vtexassets.com/arquivos/ids/458533-800-800?v=638851769183230000&width=800&height=800&aspect=true" alt="Router Huawei BE3 Wi-Fi 7 .front" class="product-img-front">
+                                    <img src="https://coolboxpe.vtexassets.com/arquivos/ids/458535-800-800?v=638851769183570000&width=800&height=800&aspect=true" alt="Router Huawei BE3 Wi-Fi 7 .back" class="product-img-back">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Router Huawei BE3 Wi-Fi 7</h3>
+                                    <div class="product-category">Cómputo / Conectividad / Routers</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Frecuencia inalámbrica</td>
+                                                        <td class="feature-value">2.4 y 5 GHz</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Velocidad de transmisión</td>
+                                                    <td class="feature-value">Hasta 3570 Mbps</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Rango de cobertura</td>
+                                                    <td class="feature-value">30m^2</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Certificación</td>
+                                                    <td class="feature-value">Cumple con los estándares de seguridad y calidad de Huawei</td>
+                                                </tr>    
+                                                <tr>
+                                                    <td class="feature-label">Modelo</td>
+                                                    <td class="feature-value">BE3</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Marca</td>
+                                                    <td class="feature-value">Huawei</td>
+                                                </tr>                                                  
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card featured">
+                        <div class="row g-0 h-100">
+                            <div class="col-12 col-md-6">
+                                <div class="product-content">
+                                    <h3 class="product-name">Router TP-Link TL-WR840N inalámbrico</h3>
+                                    <div class="product-category">Cómputo / Conectividad / Routers</div>
+                                    
+                                    <div class="features-table">
+                                        <table class="table table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="feature-label">Frecuencia inalámbrica</td>
+                                                        <td class="feature-value">2.4 GHz</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Velocidad de transmisión</td>
+                                                    <td class="feature-value">300 Mbps</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Rango de cobertura</td>
+                                                    <td class="feature-value">10m^2</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Certificación</td>
+                                                    <td class="feature-value">CE, RoHS</td>
+                                                </tr>    
+                                                <tr>
+                                                    <td class="feature-label">Modelo</td>
+                                                    <td class="feature-value">TL-WR840N</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="feature-label">Marca</td>
+                                                    <td class="feature-value">TP-LINK</td>
+                                                </tr> 
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="product-image-wrapper">
+                                    <img src="https://coolboxpe.vtexassets.com/arquivos/ids/495104-800-800?v=638966564113530000&width=800&height=800&aspect=true" alt="Router TP-Link TL-WR840N inalámbrico .front" class="product-img-front">
+                                    <img src="https://coolboxpe.vtexassets.com/arquivos/ids/495108-800-800?v=638966564113830000&width=800&height=800&aspect=true" alt="Router TP-Link TL-WR840N inalámbrico .back" class="product-img-back">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>   
+                </section>
+            </div>
+
+
+        </div>
+    </main>
+
+
+    <footer class="catalog-footer">
+        <div class="container">
+            <div class="footer-content py-4">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+
+                    </div>
+                </div>
+            </div>  
+        </div>
+    </footer>
+</body>
+</html>
